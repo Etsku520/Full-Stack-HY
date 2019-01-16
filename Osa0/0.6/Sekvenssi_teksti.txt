@@ -1,0 +1,27 @@
+title Spa lähetys
+
+
+note over selain:
+
+Js-koodi tallettaa noten omaan listaansa,
+
+renderöi kaikki notet sivulle
+
+ja sitten 
+lähettää uuden noten palvelimelle
+
+end note
+
+
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+palvelin-->selain: {"message":"note created"}
+
+
+note over selain:
+
+Js-koodi kirjoittaa {"message":"note created"}
+
+konsoliin
+
+end note
