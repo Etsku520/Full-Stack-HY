@@ -8,6 +8,7 @@ const App = (props) => {
     const [selected, setSelected] = useState(start)
     const [votes, setVotes] = 
         useState(Array.apply(null, new Array(6)).map(Number.prototype.valueOf,0))
+    const [bestAnecdote, setBest] = useState("no votes yet")
 
     const randomAnecdote = () => {
         const number = Math.floor(Math.random() * 6)
@@ -18,8 +19,15 @@ const App = (props) => {
     const vote = () => {
         const copy = [...votes]
         copy[selected]++
-        setVotes(copy)
+        let biggest = 0;
+        for (let i = 0; i < copy.length; i++) {
+            if (copy[i] > biggest) {
+                biggest = copy[i]
+                setBest(props.anecdotes[i])
+            }
+        }
 
+        setVotes(copy)
     }
 
     return (
@@ -27,6 +35,9 @@ const App = (props) => {
             <p>{props.anecdotes[selected]} ({votes[selected]})</p>
             <Button handleClick={vote} text="vote"/>
             <Button handleClick={randomAnecdote} text="netx anecdote"/>
+            <h1>The best anecdote</h1>
+            <p>{bestAnecdote}</p>
+
         </div>
     )
 }
