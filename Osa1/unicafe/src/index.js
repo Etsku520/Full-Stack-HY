@@ -5,6 +5,11 @@ const Button = ({handleClick, text}) => <button onClick={handleClick}> {text} </
 
 const Statistics = ({good, bad, neutral}) => {
     const total = good + neutral + bad
+
+    if (total === 0) {
+        return <p>vielä ei ole palautetta</p>
+    }
+
     const average = (good - bad) / total
     const positive = good / total * 100
 
