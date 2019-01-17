@@ -3,13 +3,22 @@ import ReactDOM from 'react-dom'
 
 const Button = ({handleClick, text}) => <button onClick={handleClick}> {text} </button>
 
-const Statistics = ({good, bad, neutral}) => (
-    <>
-    <p>hyvä {good}</p>
-    <p>neurtaali {neutral}</p>
-    <p>huono {bad}</p>
-    </>
-)
+const Statistics = ({good, bad, neutral}) => {
+    const total = good + neutral + bad
+    const average = (good - bad) / total
+    const positive = good / total * 100
+
+    return (
+        <>
+        <p>hyvä {good}</p>
+        <p>neurtaali {neutral}</p>
+        <p>huono {bad}</p>
+        <p>yhteensä {total}</p>
+        <p>keskiarvo {average}</p>
+        <p>positiivista {positive} %</p>
+        </>
+    )
+}
 
 const App = () => {
   // tallenna napit omaan tilaansa
