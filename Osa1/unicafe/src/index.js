@@ -14,18 +14,25 @@ const Statistics = ({good, bad, neutral}) => {
     const positive = good / total * 100
 
     return (
-        <>
-        <Statistic text="hyvä" value={good} />
-        <Statistic text="neutraali" value={neutral} />
-        <Statistic text="huono" value={bad} />
-        <Statistic text="yhteensä" value={total} />
-        <Statistic text="keskiarvo" value={average} />
-        <Statistic text="positiivista" value={positive} />
-        </>
+        <table>
+            <tbody>
+                <Statistic text="hyvä" value={good} />
+                <Statistic text="neutraali" value={neutral} />
+                <Statistic text="huono" value={bad} />
+                <Statistic text="yhteensä" value={total} />
+                <Statistic text="keskiarvo" value={average} />
+                <Statistic text="positiivista" value={positive} />
+            </tbody>
+        </ table>
     )
 }
 
-const Statistic = ({text, value}) => <p>{text} {value}</p>
+const Statistic = ({text, value}) => (
+    <tr>
+        <td>{text}</td> 
+        <td>{value}</td>
+    </tr>
+)
 
 const App = () => {
   // tallenna napit omaan tilaansa
