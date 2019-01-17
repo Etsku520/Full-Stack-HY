@@ -15,15 +15,17 @@ const Statistics = ({good, bad, neutral}) => {
 
     return (
         <>
-        <p>hyvä {good}</p>
-        <p>neurtaali {neutral}</p>
-        <p>huono {bad}</p>
-        <p>yhteensä {total}</p>
-        <p>keskiarvo {average}</p>
-        <p>positiivista {positive} %</p>
+        <Statistic text="hyvä" value={good} />
+        <Statistic text="neutraali" value={neutral} />
+        <Statistic text="huono" value={bad} />
+        <Statistic text="yhteensä" value={total} />
+        <Statistic text="keskiarvo" value={average} />
+        <Statistic text="positiivista" value={positive} />
         </>
     )
 }
+
+const Statistic = ({text, value}) => <p>{text} {value}</p>
 
 const App = () => {
   // tallenna napit omaan tilaansa
