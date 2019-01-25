@@ -22,8 +22,12 @@ const Content = ({ parts }) => {
 }
 
 const Total = ({ parts }) => {
-    let total = 0
-    parts.map(part => total += part.exercises)
+    const total = parts.reduce( (s, p) => {
+        if (isNaN(s.exercises)) {
+            return s + p.exercises
+        }
+        return s.exercises + p.exercises
+    })
 
     return (
         <p>
