@@ -1,85 +1,53 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
-const Header = ({ course }) => {
-    return (
-        <h1>
-            {course.name}
-        </h1>
-    )
-}
-
-const Content = ({ parts }) => {
-    const rows = () => parts.map(part => 
-            <Part key={part.name} part={part} />
-        )
-
-    return (
-        <>
-            {rows()}
-        </>
-    )
-}
-
-const Total = ({ parts }) => {
-    const total = parts.reduce( (s, p) => {
-        if (isNaN(s.exercises)) {
-            return s + p.exercises
-        }
-        return s.exercises + p.exercises
-    })
-
-    return (
-        <p>
-            yhteensä { total } tehtävää
-        </p>
-
-    )
-}
-
-const Part = ({ part }) => {
-    return (
-        <p>
-            {part.name} {part.exercises}
-        </p>
-    )
-}
-
-const Course = ({ course }) => (
-    <>
-        <Header course={course} />
-        <Content parts={course.parts} />
-        <Total parts={course.parts} />
-    </>
-)
+import Course from './components/Course'
 
 const App = () => {
-    const course = {
-        name: 'Half Stack -sovelluskehitys',
-        parts: [
+    const courses = [
+        {
+          name: 'Half Stack -sovelluskehitys',
+          id: 1,
+          parts: [
             {
-                name: 'Reactin perusteet',
-                exercises: 10
+              name: 'Reactin perusteet',
+              exercises: 10,
+              id: 1
             },
             {
-                name: 'Tiedonvälitys propseilla',
-                exercises: 7
+              name: 'Tiedonvälitys propseilla',
+              exercises: 7,
+              id: 2
             },
             {
-                name: 'Komponenttien tila',
-                exercises: 14
-            },
-
-            {
-                name: 'Kokoelmien renderöinti ja moduulit',
-                exercises: 5
+              name: 'Komponenttien tila',
+              exercises: 14,
+              id: 3
             }
-        ]
-    }
+          ]
+        },
+        {
+          name: 'Node.js',
+          id: 2,
+          parts: [
+            {
+              name: 'Routing',
+              exercises: 2,
+              id: 1
+            },
+            {
+              name: 'Middlewaret',
+              exercises: 7,
+              id: 2
+            }
+          ]
+        }
+    ]
 
     return (
         <div>
-            <Course course={course} />
+            {courses.map(course => 
+                <Course key={course.id} course={course} />
+            )}
         </div>
     )
 }
