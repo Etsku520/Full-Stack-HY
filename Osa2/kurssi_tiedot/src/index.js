@@ -22,10 +22,12 @@ const Content = ({ parts }) => {
 }
 
 const Total = ({ parts }) => {
+    let total = 0
+    parts.map(part => total += part.exercises)
 
     return (
         <p>
-            yhteensä (placeholder) tehtävää
+            yhteensä { total } tehtävää
         </p>
 
     )
