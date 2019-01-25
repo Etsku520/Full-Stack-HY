@@ -18,7 +18,12 @@ const App = () => {
         name: newName
     }
 
-    setPersons(persons.concat(newPerson))
+    const found = 
+        persons.filter(person => person.name === newName).length > 0
+
+    found ? 
+    alert(`${newName} on jo luettelossa`)
+    : setPersons(persons.concat(newPerson))
     setNewName('')
   }
 
