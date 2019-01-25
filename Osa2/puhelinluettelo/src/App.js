@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons.js'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -40,44 +43,26 @@ const App = () => {
   const filtered = persons.filter(person => 
     person.name.toLowerCase().includes(searchText.toLowerCase()))
 
-
-  const rows = () => filtered.map(person => 
-                        <div key={person.name}>
-                            {person.name} {person.number}
-                        </div>
-                    )
-
   return (
     <div>
       <h2>Puhelinluettelo</h2>
       <div>
           rajaa näytettäviä 
-          <input value={searchText}
-            onChange={(event) => setSearchText(event.target.value)}
+          <Filter 
+            searchText={searchText} 
+            setSearchText={setSearchText}
           />
       </div>
       <h2>Lisää uusi</h2>
-      <form onSubmit={addName}>
-        <div>
-          nimi: 
-            <input 
-                value={newName} 
-                onChange={onChangeName}
-            />
-        <div>
-            numero: 
-            <input 
-                value={newNumber}
-                onChange={onChangeNumber}
-            />
-        </div>
-        </div>
-        <div>
-          <button type="submit">lisää</button>
-        </div>
-      </form>
+      <PersonForm
+        addName={addName}
+        newName={newName}
+        onChangeName={onChangeName}
+        newNumber={newNumber}
+        onChangeNumber={onChangeNumber}
+      />
       <h3>Numerot</h3>
-      {rows()}
+      <Persons filtered={filtered} />
     </div>
   )
 
