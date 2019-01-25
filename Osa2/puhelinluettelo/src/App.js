@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 
 const App = () => {
-  const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: "045-123456"}
-  ]) 
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Martti Tienari', number: '040-123456' },
+    { name: 'Arto Järvinen', number: '040-123456' },
+    { name: 'Lea Kutvonen', number: '040-123456' }
+  ])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [ searchText, setSearchText ] = useState('')
 
   const onChangeName = (event) => {
     setNewName(event.target.value)
@@ -33,7 +37,11 @@ const App = () => {
     setNewNumber('')
   }
 
-  const rows = () => persons.map(person => 
+  const filtered = persons.filter(person => 
+    person.name.toLowerCase().includes(searchText.toLowerCase()))
+
+
+  const rows = () => filtered.map(person => 
                         <div key={person.name}>
                             {person.name} {person.number}
                         </div>
@@ -42,6 +50,13 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <div>
+          rajaa näytettäviä 
+          <input value={searchText}
+            onChange={(event) => setSearchText(event.target.value)}
+          />
+      </div>
+      <h2>Lisää uusi</h2>
       <form onSubmit={addName}>
         <div>
           nimi: 
@@ -61,7 +76,7 @@ const App = () => {
           <button type="submit">lisää</button>
         </div>
       </form>
-      <h2>Numerot</h2>
+      <h3>Numerot</h3>
       {rows()}
     </div>
   )
