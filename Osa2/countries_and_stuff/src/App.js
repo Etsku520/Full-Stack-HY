@@ -4,12 +4,17 @@ import axios from 'axios'
 const App = () => {
     const [countries, setCountries] = useState([])
     const [filter, setFilter] = useState('')
+    const [weather, setWeather] = useState([])
 
     
     useEffect(() => {
         axios
         .get('https://restcountries.eu/rest/v2/all')
         .then(response => setCountries(response.data))
+
+        axios
+        .get(`http://api.apixu.com/v1/current.json?key=0494acad724743c6aaf162703192601&q=Paris`)
+        .then(response => setWeather(response.data))
     },[])
 
     const filtered = 
@@ -26,19 +31,37 @@ const App = () => {
         </ul>
     )
 
-    const specifics = () => (
-        <div>
-            <h1>{filtered[0].name}</h1>
-            <div>capital {filtered[0].capital}</div>
-            <div>population {filtered[0].population}</div>
-            <h2>languages</h2>
-            <Languages languages={filtered[0].languages} />
-            <img style={{maxHeight: 200}}
-                src={filtered[0].flag}
-                alt={`flag of ${filtered[0].name}`}     
-            />
-        </div>
-    )
+    const specifics = () => {
+        if (weather.location.name !== filtered[0].capital) {
+            axios
+            .get(`http://api.apixu.com/v1/current.json?key=0494acad724743c6aaf162703192601&q=${filtered[0].capital}`)
+            .then(response => setWeather(response.data))
+        }
+
+        console.log(weather)
+        return (
+            <div>
+                <h1>{filtered[0].name}</h1>
+                <div>capital {filtered[0].capital}</div>
+                <div>population {filtered[0].population}</div>
+                <h2>languages</h2>
+                <Languages languages={filtered[0].languages} />
+                <img style={{maxHeight: 200}}
+                    src={filtered[0].flag}
+                    alt={`flag of ${filtered[0].name}`}     
+                />
+                <h3>Weather in {filtered[0].capital}</h3>
+                <div>
+                    <b>temperature: </b> {weather.current.temp_c} Celsius
+                </div>
+                <img src="//cdn.apixu.com/weather/64x64/night/116.png" 
+                    alt={weather.current.condition.text} />
+                <div>
+                    <b>wind: </b> {weather.current.wind_kph} kph direction {weather.current.wind_dir}
+                </div>
+            </div>
+        )
+            }
 
     const rows = () => (
         filtered.length > 10 
