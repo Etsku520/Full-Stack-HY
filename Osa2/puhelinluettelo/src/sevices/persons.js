@@ -16,4 +16,10 @@ const create = newObject => {
     )
 }
 
-export default {getAll, create}
+const eradicate = id => {
+    return (
+        axios.delete(`${baseUrl}/${id}`)
+    )
+}
+
+export default {getAll, create, eradicate}

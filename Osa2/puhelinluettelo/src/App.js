@@ -23,6 +23,15 @@ const App = () => {
       setNewNumber(event.target.value)
   }
 
+  const deleteName = (event) => {
+    if (window.confirm("Do you really want to delete this?")) {
+      const id = parseInt(event.target.value, 10)
+      const newPersons = persons.filter(person => person.id !== id)
+      personService.eradicate(id)
+      .then(setPersons(newPersons))
+    }
+  }
+
   const addName = (event) => {
     event.preventDefault()
 
@@ -67,7 +76,7 @@ const App = () => {
         onChangeNumber={onChangeNumber}
       />
       <h3>Numerot</h3>
-      <Persons filtered={filtered} />
+      <Persons filtered={filtered} deleteHandler={deleteName} />
     </div>
   )
 
