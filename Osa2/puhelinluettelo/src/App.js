@@ -32,6 +32,17 @@ const App = () => {
     }
   }
 
+  const changeNumber = (id, newPerson) => {
+    personService.changeNumber(id, newPerson)
+      .then(updated =>  {
+        setPersons(persons.map(p => 
+          p.id !== id ? p: updated))
+
+        setNewName('')
+        setNewNumber('')
+      })
+  }
+
   const addName = (event) => {
     event.preventDefault()
 
@@ -40,17 +51,22 @@ const App = () => {
         number: newNumber
     }
 
-    const found = 
-        persons.filter(person => person.name === newName).length > 0
+    const found = persons.filter(person => person.name === newName)
 
-    found ? 
-    alert(`${newName} on jo luettelossa`)
-    : personService.create(newPerson)
+    if (found.length > 0) {
+      const id = found[0].id
+      if (window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
+        changeNumber(id, newPerson)
+      }
+      
+    } else {
+       personService.create(newPerson)
       .then(person => {
         setPersons(persons.concat(person))
         setNewName('')
         setNewNumber('')
       })
+    }
     
   }
 

@@ -22,4 +22,11 @@ const eradicate = id => {
     )
 }
 
-export default {getAll, create, eradicate}
+const changeNumber = (id, newObject) => {
+    return (
+        axios.put(`${baseUrl}/${id}`, newObject)
+            .then(response => response.data)
+    )
+}
+
+export default {getAll, create, eradicate, changeNumber}
