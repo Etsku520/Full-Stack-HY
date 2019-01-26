@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons.js'
-import axios from 'axios'
+import personService from './sevices/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,9 +11,8 @@ const App = () => {
   const [ searchText, setSearchText ] = useState('')
 
   useEffect(() => {
-    axios
-    .get("http://localhost:3001/persons")
-    .then(response => setPersons(response.data))
+    personService.getAll()
+      .then(people => setPersons(people))
   }, [])
 
   const onChangeName = (event) => {
@@ -37,9 +36,13 @@ const App = () => {
 
     found ? 
     alert(`${newName} on jo luettelossa`)
-    : setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
+    : personService.create(newPerson)
+      .then(person => {
+        setPersons(persons.concat(person))
+        setNewName('')
+        setNewNumber('')
+      })
+    
   }
 
   const filtered = persons.filter(person => 

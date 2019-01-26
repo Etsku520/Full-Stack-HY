@@ -13,7 +13,7 @@ const App = () => {
         .then(response => setCountries(response.data))
 
         axios
-        .get(`http://api.apixu.com/v1/current.json?key=0494acad724743c6aaf162703192601&q=Paris`)
+        .get(`http://api.apixu.com/v1/current.json?key=57ee1517bc944a228b4172409192601&q=Paris`)
         .then(response => setWeather(response.data))
     },[])
 
@@ -34,7 +34,7 @@ const App = () => {
     const specifics = () => {
         if (weather.location.name !== filtered[0].capital) {
             axios
-            .get(`http://api.apixu.com/v1/current.json?key=0494acad724743c6aaf162703192601&q=${filtered[0].capital}`)
+            .get(`http://api.apixu.com/v1/current.json?key=57ee1517bc944a228b4172409192601&q=${filtered[0].capital}`)
             .then(response => setWeather(response.data))
         }
 
