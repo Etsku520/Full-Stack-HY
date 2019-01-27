@@ -9,6 +9,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchText, setSearchText ] = useState('')
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -26,9 +27,18 @@ const App = () => {
   const deleteName = (event) => {
     if (window.confirm("Do you really want to delete this?")) {
       const id = parseInt(event.target.value, 10)
+      const deletedPerson = persons.find(p => p.id === id)
       const newPersons = persons.filter(person => person.id !== id)
       personService.eradicate(id)
-      .then(setPersons(newPersons))
+      .then(() => {
+        setPersons(newPersons)
+        
+        setMessage(`Onnistuit poistamaan henkilön ${deletedPerson.name}`)
+
+        setTimeout(() => {
+          setMessage(null)
+        }, 6000)
+      })
     }
   }
 
@@ -40,7 +50,24 @@ const App = () => {
 
         setNewName('')
         setNewNumber('')
+        setMessage(`Onnistuit muuttamaan henkilön ${updated.name} numeron`)
+
+        setTimeout(() => {
+          setMessage(null)
+        }, 6000)
       })
+  }
+
+  const Messenger = ({message}) => {
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div className='message'>
+        {message}
+      </div>
+    )
   }
 
   const addName = (event) => {
@@ -51,7 +78,7 @@ const App = () => {
         number: newNumber
     }
 
-    const found = persons.filter(person => person.name === newName)
+    const found = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())
 
     if (found.length > 0) {
       const id = found[0].id
@@ -65,6 +92,11 @@ const App = () => {
         setPersons(persons.concat(person))
         setNewName('')
         setNewNumber('')
+        setMessage(`Onnistuit lisäämään henkilön ${person.name}`)
+
+        setTimeout(() => {
+          setMessage(null)
+        }, 6000)
       })
     }
     
@@ -76,6 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <Messenger message={message} />
       <div>
           rajaa näytettäviä 
           <Filter 
