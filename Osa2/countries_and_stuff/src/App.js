@@ -11,10 +11,7 @@ const App = () => {
         .get('https://restcountries.eu/rest/v2/all')
         .then(response => setCountries(response.data))
 
-        axios
-        .get(`http://api.apixu.com/v1/current.json?key=57ee1517bc944a228b4172409192601&q=Paris`)
-        .then(response => setWeather(response.data))
-        .catch(() => setWeather(weatherError('capital')))
+        setWeather(weatherError('ei ole olemassa'))
     },[])
 
     const filtered = 
