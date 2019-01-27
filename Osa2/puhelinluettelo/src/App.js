@@ -33,7 +33,9 @@ const App = () => {
       .then(() => {
         setPersons(newPersons)
         
-        setMessage(`Onnistuit poistamaan henkilön ${deletedPerson.name}`)
+        setMessage(
+          {text:`Onnistuit poistamaan henkilön ${deletedPerson.name}`,
+            type: 'message'})
 
         setTimeout(() => {
           setMessage(null)
@@ -50,7 +52,24 @@ const App = () => {
 
         setNewName('')
         setNewNumber('')
-        setMessage(`Onnistuit muuttamaan henkilön ${updated.name} numeron`)
+        setMessage(
+          { text:`Onnistuit muuttamaan henkilön ${updated.name} numeron`, 
+            type: 'message'}
+        )
+
+        setTimeout(() => {
+          setMessage(null)
+        }, 6000)
+      })
+      .catch (() => {
+        setMessage(
+          {text:`Henkilö ${newPerson.name} ei enää ole tietokannassa`,
+            type: 'error'}
+        )
+
+        setPersons(persons.filter(p => 
+          p.id !== id
+        ))
 
         setTimeout(() => {
           setMessage(null)
@@ -64,8 +83,8 @@ const App = () => {
     }
 
     return (
-      <div className='message'>
-        {message}
+      <div className={message.type}>
+        {message.text}
       </div>
     )
   }
@@ -92,7 +111,8 @@ const App = () => {
         setPersons(persons.concat(person))
         setNewName('')
         setNewNumber('')
-        setMessage(`Onnistuit lisäämään henkilön ${person.name}`)
+        setMessage({ text:`Onnistuit lisäämään henkilön ${person.name}`,
+          type: 'message'})
 
         setTimeout(() => {
           setMessage(null)
