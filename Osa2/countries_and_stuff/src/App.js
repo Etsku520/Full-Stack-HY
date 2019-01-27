@@ -5,7 +5,6 @@ const App = () => {
     const [countries, setCountries] = useState([])
     const [filter, setFilter] = useState('')
     const [weather, setWeather] = useState([])
-
     
     useEffect(() => {
         axios
@@ -15,6 +14,7 @@ const App = () => {
         axios
         .get(`http://api.apixu.com/v1/current.json?key=57ee1517bc944a228b4172409192601&q=Paris`)
         .then(response => setWeather(response.data))
+        .catch(() => setWeather(weatherError('capital')))
     },[])
 
     const filtered = 
@@ -36,9 +36,9 @@ const App = () => {
             axios
             .get(`http://api.apixu.com/v1/current.json?key=57ee1517bc944a228b4172409192601&q=${filtered[0].capital}`)
             .then(response => setWeather(response.data))
+            .catch(() => setWeather(weatherError(filtered[0].capital)))
         }
 
-        console.log(weather)
         return (
             <div>
                 <h1>{filtered[0].name}</h1>
@@ -54,7 +54,8 @@ const App = () => {
                 <div>
                     <b>temperature: </b> {weather.current.temp_c} Celsius
                 </div>
-                <img src="//cdn.apixu.com/weather/64x64/night/116.png" 
+                <img style={{maxHeight: 200}}
+                    src={weather.current.condition.icon} 
                     alt={weather.current.condition.text} />
                 <div>
                     <b>wind: </b> {weather.current.wind_kph} kph direction {weather.current.wind_dir}
@@ -77,6 +78,21 @@ const App = () => {
             </div>
         )
     )
+
+    const weatherError = (capital) => ( {
+        current: {
+            temp_c: 'sorry, I think my perfect app sent too many fetches at somepoint (like 6000), but lets say the temperature is -1 ',
+            condition: {
+                icon: 'https://cdn.shopify.com/s/files/1/1061/1924/products/Emoji_Icon_-_Sad_Emoji_large.png?v=1542436016',
+                text: 'sad face'
+            },
+            wind_kph: 'you can try again, sometimes it might still work. Now going 20',
+            wind_dir: 'sadness land'
+        },
+        location: {
+            name: capital
+        }
+    })
 
     return (
         <>
