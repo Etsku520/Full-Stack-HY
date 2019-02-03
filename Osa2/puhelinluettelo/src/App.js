@@ -104,19 +104,32 @@ const App = () => {
         changeNumber(id, newPerson)
       }
     } else {
-      personService.create(newPerson).then(person => {
-        setPersons(persons.concat(person))
-        setNewName('')
-        setNewNumber('')
-        setMessage({
-          text: `Onnistuit lisäämään henkilön ${person.name}`,
-          type: 'message'
-        })
+      personService
+        .create(newPerson)
+        .then(person => {
+          setPersons(persons.concat(person))
+          setNewName('')
+          setNewNumber('')
+          setMessage({
+            text: `Onnistuit lisäämään henkilön ${person.name}`,
+            type: 'message'
+          })
 
-        setTimeout(() => {
-          setMessage(null)
-        }, 6000)
-      })
+          setTimeout(() => {
+            setMessage(null)
+          }, 6000)
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          setMessage({
+            text: error.response.data.error,
+            type: 'error'
+          })
+
+          setTimeout(() => {
+            setMessage(null)
+          }, 10000)
+        })
     }
   }
 

@@ -19,11 +19,11 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema)
 
-const note = new Note({
+/* const note = new Note({
   content: 'Joskus kannattaa lukea',
   date: new Date(),
   important: true
-})
+}) */
 
 /* note.save().then(response => {
   console.log('note saved!')

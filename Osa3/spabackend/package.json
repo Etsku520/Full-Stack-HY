@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Eetu Huovila",
@@ -17,6 +18,7 @@
     "mongoose": "^5.4.9"
   },
   "devDependencies": {
+    "eslint": "^5.13.0",
     "nodemon": "^1.18.9"
   }
 }
