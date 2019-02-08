@@ -31,6 +31,22 @@ test('the returned blogs have id field', async () => {
   expect(blogs.body[0].id).toBeDefined()
 })
 
+test('adding a blog adds a post', async () => {
+  const newBlog = {
+    title: "Embedded in Academia",
+    author: "John Regehr",
+    url: "https://blog.regehr.org/",
+    likes: 1
+  }
+
+  await api.post('/api/blogs').send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogs = await helper.blogsInDb()
+  expect(blogs.length).toBe(helper.biggerList.length + 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
