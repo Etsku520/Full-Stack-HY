@@ -62,6 +62,24 @@ test('adding a blog without likes is automatically 0', async () => {
   expect(blogs[blogs.length - 1].likes).toBe(0)
 })
 
+test('adding a blog without url or title returns 400 Bad request', async () => {
+  const newTitlelessBlog = {
+    author: "John Regehr",
+    url: "https://blog.regehr.org/"
+  }
+
+  const newUrllessBlog = {
+    title: "Embedded in Academia",
+    author: "John Regehr"
+  }
+
+  api.post('/api/blogs').send(newTitlelessBlog)
+    .expect(400)
+
+  api.post('/api/blogs').send(newUrllessBlog)
+    .expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
