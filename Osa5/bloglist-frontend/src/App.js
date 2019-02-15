@@ -18,6 +18,7 @@ const App = () => {
         password
       })
 
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(logged))
       blogService.setToken(logged.token)
       setUser(logged)
       setUsername('')
@@ -29,6 +30,15 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
   }, [])
 
   const loginForm = () => (
@@ -62,6 +72,14 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} on kirjautunut</p>
+      <button
+        onClick={() => {
+          window.localStorage.removeItem('loggedBlogappUser')
+          setUser(null)
+        }}
+      >
+        kirjaudu ulos
+      </button>
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
       ))}
