@@ -7,12 +7,30 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
+
+  const newBlogHandler = async event => {
+    event.preventDefault()
+
+    try {
+      const newBlog = await blogService.create({
+        title,
+        author,
+        url
+      })
+
+      setBlogs(blogs.concat(newBlog))
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const loginHandler = async event => {
     event.preventDefault()
     try {
-      console.log(username, password)
       const logged = await loginService.login({
         username,
         password
@@ -68,7 +86,40 @@ const App = () => {
     </div>
   )
 
-  const showBlogs = () => (
+  const blogForm = () => (
+    <>
+      <h2>Luo uusi blogi</h2>
+      <form onSubmit={newBlogHandler}>
+        <div>
+          otsikko:
+          <input
+            type='text'
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          kirjoittaja:
+          <input
+            type='text'
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type='text'
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <button type='submit'>luo</button>
+      </form>
+    </>
+  )
+
+  const loggedIn = () => (
     <div>
       <h2>blogs</h2>
       <p>{user.name} on kirjautunut</p>
@@ -80,13 +131,20 @@ const App = () => {
       >
         kirjaudu ulos
       </button>
+      {blogForm()}
+      {showBlogs()}
+    </div>
+  )
+
+  const showBlogs = () => (
+    <div>
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
       ))}
     </div>
   )
 
-  return <>{user ? showBlogs() : loginForm()}</>
+  return <>{user ? loggedIn() : loginForm()}</>
 }
 
 export default App
