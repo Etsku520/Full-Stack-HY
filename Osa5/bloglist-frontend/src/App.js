@@ -10,6 +10,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [classN, setClassN] = useState('error')
   const [user, setUser] = useState(null)
 
   const newBlogHandler = async event => {
@@ -23,9 +25,33 @@ const App = () => {
       })
 
       setBlogs(blogs.concat(newBlog))
+      setClassN('note')
+      setMessage(`uusi blogi ${newBlog.title} by ${newBlog.author} on lisätty`)
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 7000)
     } catch (error) {
-      console.log(error)
+      setClassN('error')
+      setMessage('uuden blogin luonti epäonnistui')
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 7000)
+      console.log('auth error')
     }
+  }
+
+  const logout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+
+    setClassN('note')
+    setMessage(`olet kirjautunut ulos`)
+
+    setTimeout(() => {
+      setMessage(null)
+    }, 7000)
   }
 
   const loginHandler = async event => {
@@ -42,7 +68,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
-      console.log('käyttäjätunnus tai salasana virheellinen')
+      setClassN('error')
+      setMessage('käyttäjätunnus tai salasana virheellinen')
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 7000)
     }
   }
 
@@ -59,9 +90,18 @@ const App = () => {
     }
   }, [])
 
+  const Notification = () => {
+    if (message === null) {
+      return null
+    }
+
+    return <div className={classN}>{message}</div>
+  }
+
   const loginForm = () => (
     <div>
       <h1>Kirjaudu sisään</h1>
+      <Notification />
       <form onSubmit={loginHandler}>
         <div>
           käyttäjätunnus:
@@ -122,15 +162,9 @@ const App = () => {
   const loggedIn = () => (
     <div>
       <h2>blogs</h2>
+      <Notification />
       <p>{user.name} on kirjautunut</p>
-      <button
-        onClick={() => {
-          window.localStorage.removeItem('loggedBlogappUser')
-          setUser(null)
-        }}
-      >
-        kirjaudu ulos
-      </button>
+      <button onClick={logout}>kirjaudu ulos</button>
       {blogForm()}
       {showBlogs()}
     </div>
