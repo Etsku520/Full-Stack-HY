@@ -1,6 +1,9 @@
 import React from 'react'
 
 const LoginForm = ({ handleSubmit, username, password }) => {
+  const { reset: reset1, ...noResetUser } = username
+  const { reset: reset2, ...noResetPassword } = password
+
   return (
     <div>
       <h2>Kirjaudu</h2>
@@ -8,11 +11,11 @@ const LoginForm = ({ handleSubmit, username, password }) => {
       <form onSubmit={handleSubmit}>
         <div>
           käyttäjätunnus
-          <input {...username} />
+          <input {...noResetUser} />
         </div>
         <div>
           salasana
-          <input {...password} />
+          <input {...noResetPassword} />
         </div>
         <button type='submit'>kirjaudu</button>
       </form>
