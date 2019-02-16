@@ -152,6 +152,7 @@ const App = () => {
 
   const loggedIn = () => (
     <div>
+      <p>{user.name} on kirjautunut</p>
       <h2>blogs</h2>
       <Notification />
       {user ? <button onClick={logout}>kirjaudu ulos</button> : null}
@@ -177,12 +178,7 @@ const App = () => {
     </div>
   )
 
-  return (
-    <>
-      {user ? <p>{user.name} on kirjautunut</p> : loginForm()}
-      {loggedIn()}
-    </>
-  )
+  return <>{user ? loggedIn() : loginForm()}</>
 }
 
 export default App
