@@ -48,6 +48,13 @@ const App = () => {
     }
   }
 
+  const updateBlogs = blog => {
+    const newBlogs = blogs.map(b =>
+      b.id != blog.id ? b : { ...b, likes: blog.likes }
+    )
+    setBlogs(newBlogs)
+  }
+
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
@@ -143,7 +150,7 @@ const App = () => {
   const showBlogs = () => (
     <div>
       {blogs.map(blog => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlogs={updateBlogs} />
       ))}
     </div>
   )

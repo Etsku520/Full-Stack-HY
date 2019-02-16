@@ -1,8 +1,27 @@
 import React, { useState } from 'react'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlogs }) => {
   const [full, setFull] = useState(false)
+
   const toggleView = () => setFull(!full)
+  const likeHandler = async () => {
+    try {
+      const updated = await blogService.update({
+        id: blog.id,
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        likes: blog.likes + 1
+      })
+
+      console.log(updated)
+      updateBlogs(updated)
+      return updated
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const fullView = () => (
     <>
@@ -10,7 +29,7 @@ const Blog = ({ blog }) => {
       <a href={blog.url}>{blog.url}</a>
       <div>
         {`${blog.likes} tykkäystä`}
-        <button onClick={() => console.log('tykätty')}>tykkää</button>
+        <button onClick={likeHandler}>tykkää</button>
       </div>
       <div>lisännyt {blog.user.name}</div>
     </>
