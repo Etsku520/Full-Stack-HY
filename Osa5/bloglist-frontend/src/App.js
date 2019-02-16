@@ -10,7 +10,7 @@ import { useField } from './hooks'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const username = useField('text')
-  const password = useFiled('password')
+  const password = useField('password')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -31,7 +31,12 @@ const App = () => {
       })
 
       blogFromRef.current.toggleVisibility()
-      setBlogs(blogs.concat(newBlog))
+      setBlogs(
+        blogs.concat({
+          ...newBlog,
+          user: { username: user.username, name: user.name }
+        })
+      )
       setClassN('note')
       setMessage(`uusi blogi ${newBlog.title} by ${newBlog.author} on lisätty`)
 
@@ -76,15 +81,15 @@ const App = () => {
     event.preventDefault()
     try {
       const logged = await loginService.login({
-        username,
-        password
+        username: username.value,
+        password: password.value
       })
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(logged))
       blogService.setToken(logged.token)
       setUser(logged)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     } catch (error) {
       setClassN('error')
       setMessage('käyttäjätunnus tai salasana virheellinen')
