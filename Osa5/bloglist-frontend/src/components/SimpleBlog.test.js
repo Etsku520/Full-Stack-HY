@@ -1,10 +1,11 @@
 import React from 'react'
-import { render } from 'react-testing-library'
+import { render, fireEvent } from 'react-testing-library'
 import SimpleBlog from './SimpleBlog'
 
 describe('<SimpleBlog />', () => {
   let component
   let blog
+  let mockHandler
 
   beforeEach(() => {
     blog = {
@@ -13,7 +14,7 @@ describe('<SimpleBlog />', () => {
       likes: 5
     }
 
-    const mockHandler = jest.fn()
+    mockHandler = jest.fn()
 
     component = render(<SimpleBlog blog={blog} onClick={mockHandler} />)
   })
@@ -24,5 +25,13 @@ describe('<SimpleBlog />', () => {
 
     const likes = component.container.querySelector('.likes')
     expect(likes).toHaveTextContent(`blog has ${blog.likes} likes`)
+  })
+
+  it('pressing like button twice calls funtion twice', () => {
+    const button = component.getByText('like')
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(mockHandler.mock.calls.length).toBe(2)
   })
 })
