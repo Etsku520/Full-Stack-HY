@@ -64,7 +64,7 @@ const App = () => {
     setUser(null)
 
     setClassN('note')
-    setMessage(`olet kirjautunut ulos`)
+    setMessage('olet kirjautunut ulos')
 
     setTimeout(() => {
       setMessage(null)
