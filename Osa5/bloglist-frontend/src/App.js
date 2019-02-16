@@ -55,6 +55,10 @@ const App = () => {
     setBlogs(newBlogs)
   }
 
+  const removeBlog = id => {
+    setBlogs(blogs.filter(b => b.id !== id))
+  }
+
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
@@ -111,6 +115,15 @@ const App = () => {
     return <div className={classN}>{message}</div>
   }
 
+  const noticeHandler = (type, message) => {
+    setClassN(type)
+    setMessage(message)
+
+    setTimeout(() => {
+      setMessage(null)
+    }, 7000)
+  }
+
   const loginForm = () => (
     <Togglable buttonLabel='kirjaudu'>
       <LoginForm
@@ -152,7 +165,14 @@ const App = () => {
       {blogs
         .sort((blogA, blogB) => blogB.likes - blogA.likes)
         .map(blog => (
-          <Blog key={blog.id} blog={blog} updateBlogs={updateBlogs} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlogs={updateBlogs}
+            noticeHandler={noticeHandler}
+            removeBlog={removeBlog}
+            user={user}
+          />
         ))}
     </div>
   )

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlogs }) => {
+const Blog = ({ blog, updateBlogs, removeBlog, noticeHandler, user }) => {
   const [full, setFull] = useState(false)
 
   const toggleView = () => setFull(!full)
@@ -18,7 +18,23 @@ const Blog = ({ blog, updateBlogs }) => {
       updateBlogs(updated)
       return updated
     } catch (error) {
-      console.log(error)
+      noticeHandler('error', 'jotain meni pieleen')
+    }
+  }
+
+  const deleteHandler = async () => {
+    try {
+      if (window.confirm()) {
+        await blogService.remove(blog.id)
+        removeBlog(blog.id)
+
+        noticeHandler(
+          'note',
+          `blogi ${blog.title} by ${blog.author} on poistettu`
+        )
+      }
+    } catch (error) {
+      noticeHandler('error', 'jotain meni pieleen')
     }
   }
 
@@ -31,6 +47,9 @@ const Blog = ({ blog, updateBlogs }) => {
         <button onClick={likeHandler}>tykkää</button>
       </div>
       <div>lisännyt {blog.user.name}</div>
+      {user.username === blog.user.username ? (
+        <button onClick={deleteHandler}>poista</button>
+      ) : null}
     </>
   )
 
