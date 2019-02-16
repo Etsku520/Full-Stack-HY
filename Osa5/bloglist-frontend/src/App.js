@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Togglable from './components/Togglable'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -14,6 +17,8 @@ const App = () => {
   const [classN, setClassN] = useState('error')
   const [user, setUser] = useState(null)
 
+  const blogFromRef = React.createRef()
+
   const newBlogHandler = async event => {
     event.preventDefault()
 
@@ -24,6 +29,7 @@ const App = () => {
         url
       })
 
+      blogFromRef.current.toggleVisibility()
       setBlogs(blogs.concat(newBlog))
       setClassN('note')
       setMessage(`uusi blogi ${newBlog.title} by ${newBlog.author} on lisätty`)
@@ -99,73 +105,37 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <div>
-      <h1>Kirjaudu sisään</h1>
-      <Notification />
-      <form onSubmit={loginHandler}>
-        <div>
-          käyttäjätunnus:
-          <input
-            type='text'
-            value={username}
-            name='username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          salasana:
-          <input
-            type='password'
-            value={password}
-            name='password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type='submit'>kirjaudu</button>
-      </form>
-    </div>
+    <Togglable buttonLabel='kirjaudu'>
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={loginHandler}
+      />
+    </Togglable>
   )
 
   const blogForm = () => (
-    <>
-      <h2>Luo uusi blogi</h2>
-      <form onSubmit={newBlogHandler}>
-        <div>
-          otsikko:
-          <input
-            type='text'
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          kirjoittaja:
-          <input
-            type='text'
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type='text'
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type='submit'>luo</button>
-      </form>
-    </>
+    <Togglable buttonLabel='uusi blogi' ref={blogFromRef}>
+      <BlogForm
+        title={title}
+        author={author}
+        url={url}
+        titleHandler={({ target }) => setTitle(target.value)}
+        authorHandler={({ target }) => setAuthor(target.value)}
+        urlHandler={({ target }) => setUrl(target.value)}
+        submitHandler={newBlogHandler}
+      />
+    </Togglable>
   )
 
   const loggedIn = () => (
     <div>
       <h2>blogs</h2>
       <Notification />
-      <p>{user.name} on kirjautunut</p>
-      <button onClick={logout}>kirjaudu ulos</button>
-      {blogForm()}
+      {user ? <button onClick={logout}>kirjaudu ulos</button> : null}
+      {user ? blogForm() : null}
       {showBlogs()}
     </div>
   )
@@ -178,7 +148,12 @@ const App = () => {
     </div>
   )
 
-  return <>{user ? loggedIn() : loginForm()}</>
+  return (
+    <>
+      {user ? <p>{user.name} on kirjautunut</p> : loginForm()}
+      {loggedIn()}
+    </>
+  )
 }
 
 export default App
