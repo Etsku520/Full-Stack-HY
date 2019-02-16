@@ -15,7 +15,6 @@ const Blog = ({ blog, updateBlogs }) => {
         likes: blog.likes + 1
       })
 
-      console.log(updated)
       updateBlogs(updated)
       return updated
     } catch (error) {
