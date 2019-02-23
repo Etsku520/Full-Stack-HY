@@ -1,5 +1,6 @@
 import React from 'react'
 import { giveVoteTo } from './../reducers/anecdoteReducer'
+import { eraseNotification, votedNotification} from './../reducers/notificationReducer'
 
 const AnecdoteList = ({ store }) => {
   const anecdotes = store.getState().anecdotes
@@ -8,6 +9,11 @@ const AnecdoteList = ({ store }) => {
     store.dispatch(
       giveVoteTo(id)
     )
+    const content = anecdotes.find(a => a.id === id).content
+    store.dispatch(votedNotification(content))
+    setTimeout(() => {
+      store.dispatch(eraseNotification())
+    }, 5000)
   }
 
   return (
