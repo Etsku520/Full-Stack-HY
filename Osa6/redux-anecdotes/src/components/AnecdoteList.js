@@ -30,6 +30,7 @@ const AnecdoteList = (props) => {
 }
 
 const toShow = (state) => {
+  console.log(state.anecdotes)
   return (
     state.anecdotes.filter(a => 
         a.content.toLowerCase()

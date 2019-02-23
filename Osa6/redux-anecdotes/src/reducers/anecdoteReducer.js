@@ -42,11 +42,10 @@ const reducer = (state = [], action) => {
   }
 }
 
-const createAnecdote = (content) => {
-  const anecdote = asObject(content)
+const createAnecdote = (data) => {
   return {
     type: 'CREATE',
-    data: anecdote
+    data
   }
 }
 
