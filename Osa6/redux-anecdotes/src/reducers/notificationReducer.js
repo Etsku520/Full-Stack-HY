@@ -1,30 +1,18 @@
-export const votedNotification = (content) => {
-  return {
-    type: 'VOTED',
-    data: content
-  }
-}
+export const setNotification = (content, time) => {
+  return async dispatch => {
+    dispatch({
+      type: 'NOTE',
+      data: content
+    })
 
-export const createdNotification = (content) => {
-  return {
-    type: 'CREATED',
-    data: content
-  }
-}
-
-export const eraseNotification = () => {
-  return {
-    type: 'ERASE'
+    setTimeout(() => {dispatch({type: 'ERASE'})}, time*1000)
   }
 }
 
 const notificationReducer = (state = null, action) => {
   switch (action.type) {
-    case 'VOTED':
-    return `you voted '${action.data}'`
-
-    case 'CREATED':
-    return `you created a new anecdote '${action.data}'`
+    case 'NOTE':
+    return action.data
 
     case 'ERASE':
     return null

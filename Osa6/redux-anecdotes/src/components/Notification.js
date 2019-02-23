@@ -7,6 +7,7 @@ const Notification = (props) => {
     padding: 10,
     borderWidth: 1
   }
+
   return (
     props.notification 
     ? <div style={style}>
