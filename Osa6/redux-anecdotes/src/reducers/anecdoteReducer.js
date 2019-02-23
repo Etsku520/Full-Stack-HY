@@ -55,11 +55,12 @@ const createAnecdote = (content) => {
 }
 
 const giveVoteTo = (id) => {
-  return {
-    type: 'VOTE',
-    data: {
-      id
-    }
+  return async dispatch => {
+    await anecdoteService.addVote(id)
+    dispatch({
+      type: 'VOTE',
+      data: {id: id}
+    })
   }
 }
 
