@@ -2,6 +2,7 @@ import React from 'react'
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import Notification from './components/Notification'
+import Filter from './components/Filter'
 
 const App = (props) => {
   const store = props.store
@@ -10,6 +11,7 @@ const App = (props) => {
     <div>
       <Notification store={store} />
       <h2>Anecdotes</h2>
+      <Filter store={store} />
       <AnecdoteForm store={store} />
       <AnecdoteList store={store} />
     </div>
