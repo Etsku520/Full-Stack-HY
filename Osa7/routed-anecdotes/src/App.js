@@ -91,6 +91,7 @@ const CreateNew = props => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const [goBack, setGoBack] = useState(false)
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -100,6 +101,12 @@ const CreateNew = props => {
       info,
       votes: 0
     })
+
+    setGoBack(true)
+  }
+
+  if (goBack) {
+    return <Redirect from='/create' to='/' />
   }
 
   return (
@@ -154,11 +161,14 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
 
   const addNew = anecdote => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`A new anecdote '${anecdote.content}' created!`)
+    setTimeout(() => setNotification(null), 10 * 1000)
+    return <Redirect to='/' />
   }
 
   const anecdoteById = id => anecdotes.find(a => a.id === id)
@@ -180,6 +190,7 @@ const App = () => {
       <Router>
         <div>
           <Menu />
+          <div>{notification}</div>
           <Route
             exact
             path='/'
