@@ -1,4 +1,5 @@
 import React from 'react'
+import { Form, Button } from 'semantic-ui-react'
 
 const LoginForm = ({ handleSubmit, username, password }) => {
   const { reset: reset1, ...noResetUser } = username
@@ -8,17 +9,17 @@ const LoginForm = ({ handleSubmit, username, password }) => {
     <div>
       <h2>Kirjaudu</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          käyttäjätunnus
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>käyttäjätunnus</label>
           <input {...noResetUser} />
-        </div>
-        <div>
-          salasana
+        </Form.Field>
+        <Form.Field>
+          <label>salasana</label>
           <input {...noResetPassword} />
-        </div>
-        <button type='submit'>kirjaudu</button>
-      </form>
+        </Form.Field>
+        <Button type='submit'>kirjaudu</Button>
+      </Form>
     </div>
   )
 }

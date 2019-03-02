@@ -1,4 +1,5 @@
 import React from 'react'
+import { Form, Button } from 'semantic-ui-react'
 
 const BlogForm = ({
   title,
@@ -11,21 +12,21 @@ const BlogForm = ({
 }) => (
   <>
     <h2>Luo uusi blogi</h2>
-    <form onSubmit={submitHandler}>
-      <div>
-        otsikko:
+    <Form onSubmit={submitHandler}>
+      <Form.Field>
+        <label>otsikko:</label>
         <input type='text' value={title} onChange={titleHandler} />
-      </div>
-      <div>
-        kirjoittaja:
+      </Form.Field>
+      <Form.Field>
+        <label>kirjoittaja:</label>
         <input type='text' value={author} onChange={authorHandler} />
-      </div>
-      <div>
-        url:
+      </Form.Field>
+      <Form.Field>
+        <label>url:</label>
         <input type='text' value={url} onChange={urlHandler} />
-      </div>
-      <button type='submit'>luo</button>
-    </form>
+      </Form.Field>
+      <Button type='submit'>luo</Button>
+    </Form>
   </>
 )
 

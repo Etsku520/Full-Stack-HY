@@ -1,14 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Message } from 'semantic-ui-react'
 
 const Notification = props => {
   if (props.notification === null) {
     return null
   }
 
-  const { content, classN } = props.notification
+  const { classN, content } = props.notification
+  if (classN === 'note') {
+    return <Message success>{content}</Message>
+  }
 
-  return <div className={classN}>{content}</div>
+  return <Message error>{content}</Message>
 }
 
 const mapStateToProps = state => {

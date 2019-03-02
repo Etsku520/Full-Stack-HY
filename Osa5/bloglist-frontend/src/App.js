@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect
+} from 'react-router-dom'
+import { Container, Table, Button } from 'semantic-ui-react'
 
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
@@ -18,11 +24,12 @@ import { useField } from './hooks'
 
 const App = ({
   blogs,
+  removeBlog,
+  addLike,
   createBlog,
   initBlogs,
   makeNotification,
   login,
-  logout,
   user
 }) => {
   const username = useField('text')
@@ -34,11 +41,7 @@ const App = ({
   const blogFromRef = React.createRef()
 
   const likeHandler = async blog => {
-    try {
-      addLike(blog.id)
-    } catch (error) {
-      makeNotification('jotain meni pieleen', 'error')
-    }
+    addLike(blog.id)
   }
 
   const deleteHandler = async blog => {
@@ -133,13 +136,24 @@ const App = ({
     return (
       <>
         <h2>Users</h2>
-        {Object.keys(stats).map(p => (
-          <div key={p}>
-            <Link to={`/users/${p}`}>
-              {stats[p].user.name} {stats[p].blogs.length}
-            </Link>
-          </div>
-        ))}
+        <Table striped>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Users</Table.HeaderCell>
+              <Table.HeaderCell>Added Blogs</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {Object.keys(stats).map(p => (
+              <Table.Row key={p}>
+                <Table.Cell>
+                  <Link to={`/users/${p}`}>{stats[p].user.name}</Link>
+                </Table.Cell>
+                <Table.Cell>{stats[p].blogs.length}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </>
     )
   }
@@ -153,11 +167,11 @@ const App = ({
         <a href={blog.url}>{blog.url}</a>
         <div>
           {`${blog.likes} tykkäystä`}
-          <button onClick={() => likeHandler(blog)}>tykkää</button>
+          <Button onClick={() => likeHandler(blog)}>tykkää</Button>
         </div>
         <div>lisännyt {blog.user.name}</div>
         {user && user.username === blog.user.username ? (
-          <button onClick={() => deleteHandler(blog)}>poista</button>
+          <Button onClick={() => deleteHandler(blog)}>poista</Button>
         ) : null}
       </div>
     )
@@ -210,27 +224,33 @@ const App = ({
   }
 
   return (
-    <Router>
-      <div>
-        <Navbar />
-        <h2>blogs</h2>
-        <Notification />
-        <Route
-          exact
-          path='/'
-          render={() => (user ? loggedIn() : loginForm())}
-        />
-        <Route exact path='/users' render={() => showUsers()} />
-        <Route
-          path='/users/:id'
-          render={({ match }) => showUser(match.params.id)}
-        />
-        <Route
-          path='/blogs/:id'
-          render={({ match }) => showBlog(match.params.id)}
-        />
-      </div>
-    </Router>
+    <Container>
+      <Router>
+        <div>
+          <Navbar />
+          <h2>blogs</h2>
+          <Notification />
+          <Route
+            exact
+            path='/'
+            render={() => (user ? loggedIn() : <Redirect to='/login' />)}
+          />
+          <Route exact path='/users' render={() => showUsers()} />
+          <Route
+            path='/users/:id'
+            render={({ match }) => showUser(match.params.id)}
+          />
+          <Route
+            path='/blogs/:id'
+            render={({ match }) => showBlog(match.params.id)}
+          />
+          <Route
+            path='/login'
+            render={() => (!user ? loginForm() : <Redirect to='/' />)}
+          />
+        </div>
+      </Router>
+    </Container>
   )
 }
 

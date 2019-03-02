@@ -1,10 +1,10 @@
-export const makeNotification = (content, calssN) => {
+export const makeNotification = (content, classN) => {
   return dispatch => {
     dispatch({
       type: 'SET_NOTE',
       data: {
         content,
-        calssN
+        classN
       }
     })
 
@@ -21,7 +21,7 @@ const notificationReducer = (state = null, action) => {
     case 'SET_NOTE':
       return {
         content: action.data.content,
-        calssN: action.data.calssN
+        classN: action.data.classN
       }
 
     case 'ERASE':
