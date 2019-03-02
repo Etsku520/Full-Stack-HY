@@ -7,7 +7,10 @@ export const createBlog = content => {
       type: 'ADD_BLOG',
       data: {
         ...newBlog,
-        user: { username: content.user.username, name: content.user.name }
+        user: {
+          username: content.user.username,
+          name: content.user.name
+        }
       }
     })
   }

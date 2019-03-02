@@ -5,7 +5,6 @@ import { makeNotification } from './../reducers/notificationReducer'
 
 const Blog = ({ blog, addLike, removeBlog, makeNotification, user }) => {
   const [full, setFull] = useState(false)
-  console.log(blog)
 
   const toggleView = () => setFull(!full)
   const likeHandler = async () => {
@@ -59,6 +58,12 @@ const Blog = ({ blog, addLike, removeBlog, makeNotification, user }) => {
   )
 }
 
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
+
 const mapDispatchToProps = {
   removeBlog: removeBlog,
   addLike: addLike,
@@ -66,7 +71,7 @@ const mapDispatchToProps = {
 }
 
 const connectedBlog = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Blog)
 
