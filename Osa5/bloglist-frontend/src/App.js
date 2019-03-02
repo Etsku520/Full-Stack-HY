@@ -159,6 +159,10 @@ const App = ({
 
     const userStats = stats[id]
 
+    if (!userStats) {
+      return null
+    }
+
     return (
       <>
         <h2>{userStats.user.name}</h2>
