@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  withRouter
+} from 'react-router-dom'
 
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
@@ -56,12 +63,6 @@ const App = ({
       password: password.value
     })
 
-    setTimeout(() => {
-      if (!user) {
-        makeNotification('käyttäjätunnus tai salasana virheellinen', 'error')
-      }
-    }, 50)
-
     username.reset()
     password.reset()
   }
@@ -81,7 +82,6 @@ const App = ({
 
   const loginForm = () => (
     <>
-      <Notification />
       <Togglable buttonLabel='kirjaudu'>
         <LoginForm
           username={username}
@@ -106,16 +106,32 @@ const App = ({
     </Togglable>
   )
 
+  const showUsers = () => {
+    let stats = {}
+    blogs.forEach(b => {
+      if (b.user.id in stats) {
+        stats[b.user.id].blogs.push(b)
+      } else {
+        stats[b.user.id] = { user: b.user, blogs: [b] }
+      }
+    })
+
+    return (
+      <>
+        <h2>Users</h2>
+        {Object.keys(stats).map(p => (
+          <div key={p}>
+            <Link to={`/users/${p}`}>
+              {stats[p].user.name} {stats[p].blogs.length}
+            </Link>
+          </div>
+        ))}
+      </>
+    )
+  }
+
   const loggedIn = () => (
     <div>
-      {user ? <p>{user.name} on kirjautunut</p> : null}
-      <h2>blogs</h2>
-      <Notification />
-      {user ? (
-        <button onClick={logoutHandler}>kirjaudu ulos</button>
-      ) : (
-        loginForm()
-      )}
       {user ? blogForm() : null}
       {showBlogs()}
     </div>
@@ -131,7 +147,51 @@ const App = ({
     </div>
   )
 
-  return <>{user ? loggedIn() : loginForm()}</>
+  const showUser = id => {
+    let stats = {}
+    blogs.forEach(b => {
+      if (b.user.id in stats) {
+        stats[b.user.id].blogs.push(b)
+      } else {
+        stats[b.user.id] = { user: b.user, blogs: [b] }
+      }
+    })
+
+    const userStats = stats[id]
+
+    return (
+      <>
+        <h2>{userStats.user.name}</h2>
+        <h3>added blogs</h3>
+        <ul>
+          {userStats.blogs.map(b => (
+            <li key={b.id}>{b.title}</li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+
+  return (
+    <Router>
+      <div>
+        {user ? <p>{user.name} on kirjautunut</p> : null}
+        <h2>blogs</h2>
+        <Notification />
+        {user ? <button onClick={logoutHandler}>kirjaudu ulos</button> : null}
+        <Route
+          exact
+          path='/'
+          render={() => (user ? loggedIn() : loginForm())}
+        />
+        <Route exact path='/users' render={() => showUsers()} />
+        <Route
+          path='/users/:id'
+          render={({ match }) => showUser(match.params.id)}
+        />
+      </div>
+    </Router>
+  )
 }
 
 const mapStateToProps = state => {
