@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
+import { makeNotification } from './reducers/notificationReducer'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useField } from './hooks'
 
-const App = () => {
+const App = ({ store, makeNotification }) => {
   const [blogs, setBlogs] = useState([])
   const username = useField('text')
   const password = useField('password')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  const [message, setMessage] = useState(null)
-  const [classN, setClassN] = useState('error')
   const [user, setUser] = useState(null)
 
   const blogFromRef = React.createRef()
@@ -37,18 +40,17 @@ const App = () => {
           user: { username: user.username, name: user.name }
         })
       )
-      setClassN('note')
-      setMessage(`uusi blogi ${newBlog.title} by ${newBlog.author} on lisätty`)
+      makeNotification(
+        `uusi blogi ${newBlog.title} by ${newBlog.author} on lisätty`,
+        'note'
+      )
 
-      setTimeout(() => {
-        setMessage(null)
-      }, 7000)
+      setTimeout(() => {}, 7000)
     } catch (error) {
-      setClassN('error')
-      setMessage('uuden blogin luonti epäonnistui')
+      makeNotification('uuden blogin luonti epäonnistui', 'error')
 
       setTimeout(() => {
-        setMessage(null)
+        makeNotification(null)
       }, 7000)
       console.log('auth error')
     }
@@ -69,33 +71,33 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
 
-    setClassN('note')
-    setMessage('olet kirjautunut ulos')
+    makeNotification('olet kirjautunut ulos', 'note')
 
     setTimeout(() => {
-      setMessage(null)
+      makeNotification(null)
     }, 7000)
   }
 
   const loginHandler = async event => {
     event.preventDefault()
     try {
+      console.log('start')
       const logged = await loginService.login({
         username: username.value,
         password: password.value
       })
 
+      console.log('still here')
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(logged))
       blogService.setToken(logged.token)
       setUser(logged)
       username.reset()
       password.reset()
     } catch (error) {
-      setClassN('error')
-      setMessage('käyttäjätunnus tai salasana virheellinen')
-
+      makeNotification('käyttäjätunnus tai salasana virheellinen', 'error')
+      console.log('error')
       setTimeout(() => {
-        setMessage(null)
+        makeNotification(null)
       }, 7000)
     }
   }
@@ -113,20 +115,11 @@ const App = () => {
     }
   }, [])
 
-  const Notification = () => {
-    if (message === null) {
-      return null
-    }
-
-    return <div className={classN}>{message}</div>
-  }
-
   const noticeHandler = (type, message) => {
-    setClassN(type)
-    setMessage(message)
+    makeNotification(message, type)
 
     setTimeout(() => {
-      setMessage(null)
+      makeNotification(null)
     }, 7000)
   }
 
@@ -156,10 +149,10 @@ const App = () => {
 
   const loggedIn = () => (
     <div>
-      <p>{user.name} on kirjautunut</p>
+      {user ? <p>{user.name} on kirjautunut</p> : null}
       <h2>blogs</h2>
       <Notification />
-      {user ? <button onClick={logout}>kirjaudu ulos</button> : null}
+      {user ? <button onClick={logout}>kirjaudu ulos</button> : loginForm()}
       {user ? blogForm() : null}
       {showBlogs()}
     </div>
@@ -182,7 +175,16 @@ const App = () => {
     </div>
   )
 
-  return <>{user ? loggedIn() : loginForm()}</>
+  return <>{loggedIn()}</>
 }
 
-export default App
+const mapDispatchToProps = {
+  makeNotification: makeNotification
+}
+
+const connectedApp = connect(
+  null,
+  mapDispatchToProps
+)(App)
+
+export default connectedApp
