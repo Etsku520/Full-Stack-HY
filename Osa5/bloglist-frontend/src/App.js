@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Redirect,
-  withRouter
-} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Navbar from './components/Navbar'
 import { removeBlog, addLike } from './reducers/blogReducer'
 import { makeNotification } from './reducers/notificationReducer'
 import { createBlog, initBlogs } from './reducers/blogReducer'
@@ -73,11 +68,6 @@ const App = ({
     setAuthor('')
     setUrl('')
     makeNotification(`uusi blogi ${title} by ${author} on lisätty`, 'note')
-  }
-
-  const logoutHandler = () => {
-    logout()
-    makeNotification('olet kirjautunut ulos', 'note')
   }
 
   const loginHandler = async event => {
@@ -222,10 +212,9 @@ const App = ({
   return (
     <Router>
       <div>
-        {user ? <p>{user.name} on kirjautunut</p> : null}
+        <Navbar />
         <h2>blogs</h2>
         <Notification />
-        {user ? <button onClick={logoutHandler}>kirjaudu ulos</button> : null}
         <Route
           exact
           path='/'
