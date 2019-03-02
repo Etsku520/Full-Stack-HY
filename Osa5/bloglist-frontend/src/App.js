@@ -7,13 +7,13 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import { makeNotification } from './reducers/notificationReducer'
+import { createBlog, initBlogs } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useField } from './hooks'
 
-const App = ({ store, makeNotification }) => {
-  const [blogs, setBlogs] = useState([])
+const App = ({ blogs, createBlog, initBlogs, makeNotification }) => {
   const username = useField('text')
   const password = useField('password')
   const [title, setTitle] = useState('')
@@ -27,44 +27,25 @@ const App = ({ store, makeNotification }) => {
     event.preventDefault()
 
     try {
-      const newBlog = await blogService.create({
+      const newBlog = {
         title,
         author,
         url
-      })
+      }
 
       blogFromRef.current.toggleVisibility()
-      setBlogs(
-        blogs.concat({
-          ...newBlog,
-          user: { username: user.username, name: user.name }
-        })
-      )
+      createBlog({
+        newBlog,
+        user: { username: user.username, name: user.name }
+      })
       makeNotification(
         `uusi blogi ${newBlog.title} by ${newBlog.author} on lisätty`,
         'note'
       )
-
-      setTimeout(() => {}, 7000)
     } catch (error) {
       makeNotification('uuden blogin luonti epäonnistui', 'error')
-
-      setTimeout(() => {
-        makeNotification(null)
-      }, 7000)
       console.log('auth error')
     }
-  }
-
-  const updateBlogs = blog => {
-    const newBlogs = blogs.map(b =>
-      b.id !== blog.id ? b : { ...b, likes: blog.likes }
-    )
-    setBlogs(newBlogs)
-  }
-
-  const removeBlog = id => {
-    setBlogs(blogs.filter(b => b.id !== id))
   }
 
   const logout = () => {
@@ -72,10 +53,6 @@ const App = ({ store, makeNotification }) => {
     setUser(null)
 
     makeNotification('olet kirjautunut ulos', 'note')
-
-    setTimeout(() => {
-      makeNotification(null)
-    }, 7000)
   }
 
   const loginHandler = async event => {
@@ -96,14 +73,11 @@ const App = ({ store, makeNotification }) => {
     } catch (error) {
       makeNotification('käyttäjätunnus tai salasana virheellinen', 'error')
       console.log('error')
-      setTimeout(() => {
-        makeNotification(null)
-      }, 7000)
     }
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs))
+    blogService.getAll().then(blogs => initBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -115,22 +89,17 @@ const App = ({ store, makeNotification }) => {
     }
   }, [])
 
-  const noticeHandler = (type, message) => {
-    makeNotification(message, type)
-
-    setTimeout(() => {
-      makeNotification(null)
-    }, 7000)
-  }
-
   const loginForm = () => (
-    <Togglable buttonLabel='kirjaudu'>
-      <LoginForm
-        username={username}
-        password={password}
-        handleSubmit={loginHandler}
-      />
-    </Togglable>
+    <>
+      <Notification />
+      <Togglable buttonLabel='kirjaudu'>
+        <LoginForm
+          username={username}
+          password={password}
+          handleSubmit={loginHandler}
+        />
+      </Togglable>
+    </>
   )
 
   const blogForm = () => (
@@ -163,27 +132,28 @@ const App = ({ store, makeNotification }) => {
       {blogs
         .sort((blogA, blogB) => blogB.likes - blogA.likes)
         .map(blog => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlogs={updateBlogs}
-            noticeHandler={noticeHandler}
-            removeBlog={removeBlog}
-            user={user}
-          />
+          <Blog key={blog.id} blog={blog} user={user} />
         ))}
     </div>
   )
 
-  return <>{loggedIn()}</>
+  return <>{user ? loggedIn() : loginForm()}</>
+}
+
+const mapStateToProps = state => {
+  return {
+    blogs: state.blogs
+  }
 }
 
 const mapDispatchToProps = {
+  createBlog: createBlog,
+  initBlogs: initBlogs,
   makeNotification: makeNotification
 }
 
 const connectedApp = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App)
 

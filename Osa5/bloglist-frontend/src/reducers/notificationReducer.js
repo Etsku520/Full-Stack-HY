@@ -1,10 +1,18 @@
 export const makeNotification = (content, calssN) => {
-  return {
-    type: 'SET_NOTE',
-    data: {
-      content,
-      calssN
-    }
+  return dispatch => {
+    dispatch({
+      type: 'SET_NOTE',
+      data: {
+        content,
+        calssN
+      }
+    })
+
+    clearTimeout()
+
+    setTimeout(() => {
+      dispatch({ type: 'ERASE' })
+    }, 10 * 1000)
   }
 }
 
@@ -15,6 +23,9 @@ const notificationReducer = (state = null, action) => {
         content: action.data.content,
         calssN: action.data.calssN
       }
+
+    case 'ERASE':
+      return null
 
     default:
       return state

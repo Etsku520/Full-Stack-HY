@@ -1,40 +1,33 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
+import { connect } from 'react-redux'
+import { removeBlog, addLike } from './../reducers/blogReducer'
+import { makeNotification } from './../reducers/notificationReducer'
 
-const Blog = ({ blog, updateBlogs, removeBlog, noticeHandler, user }) => {
+const Blog = ({ blog, addLike, removeBlog, makeNotification, user }) => {
   const [full, setFull] = useState(false)
+  console.log(blog)
 
   const toggleView = () => setFull(!full)
   const likeHandler = async () => {
     try {
-      const updated = await blogService.update({
-        id: blog.id,
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
-        likes: blog.likes + 1
-      })
-
-      updateBlogs(updated)
-      return updated
+      addLike(blog.id)
     } catch (error) {
-      noticeHandler('error', 'jotain meni pieleen')
+      makeNotification('jotain meni pieleen', 'error')
     }
   }
 
   const deleteHandler = async () => {
     try {
       if (window.confirm()) {
-        await blogService.remove(blog.id)
         removeBlog(blog.id)
 
-        noticeHandler(
-          'note',
-          `blogi ${blog.title} by ${blog.author} on poistettu`
+        makeNotification(
+          `blogi ${blog.title} by ${blog.author} on poistettu`,
+          'note'
         )
       }
     } catch (error) {
-      noticeHandler('error', 'jotain meni pieleen')
+      makeNotification('jotain meni pieleen', 'error')
     }
   }
 
@@ -47,7 +40,7 @@ const Blog = ({ blog, updateBlogs, removeBlog, noticeHandler, user }) => {
         <button onClick={likeHandler}>tykkää</button>
       </div>
       <div>lisännyt {blog.user.name}</div>
-      {user.username === blog.user.username ? (
+      {user && user.username === blog.user.username ? (
         <button onClick={deleteHandler}>poista</button>
       ) : null}
     </>
@@ -66,4 +59,15 @@ const Blog = ({ blog, updateBlogs, removeBlog, noticeHandler, user }) => {
   )
 }
 
-export default Blog
+const mapDispatchToProps = {
+  removeBlog: removeBlog,
+  addLike: addLike,
+  makeNotification: makeNotification
+}
+
+const connectedBlog = connect(
+  null,
+  mapDispatchToProps
+)(Blog)
+
+export default connectedBlog
