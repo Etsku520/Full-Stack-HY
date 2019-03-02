@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { removeBlog, addLike } from './../reducers/blogReducer'
 import { makeNotification } from './../reducers/notificationReducer'
 
 const Blog = ({ blog, addLike, removeBlog, makeNotification, user }) => {
   const [full, setFull] = useState(false)
-  console.log(blog)
   const toggleView = () => setFull(!full)
   const likeHandler = async () => {
     try {
@@ -32,7 +32,11 @@ const Blog = ({ blog, addLike, removeBlog, makeNotification, user }) => {
 
   const fullView = () => (
     <>
-      <div onClick={toggleView}>{`${blog.title} by ${blog.author}`}</div>
+      <div onClick={toggleView}>
+        <Link to={`/blogs/${blog.id}`}>{`${blog.title} by ${
+          blog.author
+        }`}</Link>
+      </div>
       <a href={blog.url}>{blog.url}</a>
       <div>
         {`${blog.likes} tykkäystä`}
@@ -51,7 +55,9 @@ const Blog = ({ blog, addLike, removeBlog, makeNotification, user }) => {
         fullView()
       ) : (
         <div onClick={toggleView}>
-          {blog.title} by {blog.author}
+          <Link to={`/blogs/${blog.id}`}>{`${blog.title} by ${
+            blog.author
+          }`}</Link>
         </div>
       )}
     </div>

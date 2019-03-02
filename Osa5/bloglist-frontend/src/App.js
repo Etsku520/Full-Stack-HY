@@ -13,6 +13,7 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import { removeBlog, addLike } from './reducers/blogReducer'
 import { makeNotification } from './reducers/notificationReducer'
 import { createBlog, initBlogs } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
@@ -36,6 +37,29 @@ const App = ({
   const [url, setUrl] = useState('')
 
   const blogFromRef = React.createRef()
+
+  const likeHandler = async blog => {
+    try {
+      addLike(blog.id)
+    } catch (error) {
+      makeNotification('jotain meni pieleen', 'error')
+    }
+  }
+
+  const deleteHandler = async blog => {
+    try {
+      if (window.confirm()) {
+        removeBlog(blog.id)
+
+        makeNotification(
+          `blogi ${blog.title} by ${blog.author} on poistettu`,
+          'note'
+        )
+      }
+    } catch (error) {
+      makeNotification('jotain meni pieleen', 'error')
+    }
+  }
 
   const newBlogHandler = async event => {
     event.preventDefault()
@@ -130,6 +154,25 @@ const App = ({
     )
   }
 
+  const showBlog = id => {
+    const blog = blogs.find(b => b.id === id)
+    if (!blog) return null
+    return (
+      <div>
+        <div>{`${blog.title} by ${blog.author}`}</div>
+        <a href={blog.url}>{blog.url}</a>
+        <div>
+          {`${blog.likes} tykkäystä`}
+          <button onClick={() => likeHandler(blog)}>tykkää</button>
+        </div>
+        <div>lisännyt {blog.user.name}</div>
+        {user && user.username === blog.user.username ? (
+          <button onClick={() => deleteHandler(blog)}>poista</button>
+        ) : null}
+      </div>
+    )
+  }
+
   const loggedIn = () => (
     <div>
       {user ? blogForm() : null}
@@ -193,6 +236,10 @@ const App = ({
           path='/users/:id'
           render={({ match }) => showUser(match.params.id)}
         />
+        <Route
+          path='/blogs/:id'
+          render={({ match }) => showBlog(match.params.id)}
+        />
       </div>
     </Router>
   )
@@ -210,7 +257,9 @@ const mapDispatchToProps = {
   initBlogs,
   makeNotification,
   login,
-  logout
+  logout,
+  addLike,
+  removeBlog
 }
 
 const connectedApp = connect(
