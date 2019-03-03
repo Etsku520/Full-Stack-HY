@@ -6,7 +6,7 @@ import {
   Link,
   Redirect
 } from 'react-router-dom'
-import { Container, Table, Button } from 'semantic-ui-react'
+import { Container, Table, Button, Form } from 'semantic-ui-react'
 
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
@@ -14,7 +14,7 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Navbar from './components/Navbar'
-import { removeBlog, addLike } from './reducers/blogReducer'
+import { removeBlog, addLike, addComment } from './reducers/blogReducer'
 import { makeNotification } from './reducers/notificationReducer'
 import { createBlog, initBlogs } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
@@ -28,6 +28,7 @@ const App = ({
   addLike,
   createBlog,
   initBlogs,
+  addComment,
   makeNotification,
   login,
   user
@@ -64,7 +65,7 @@ const App = ({
 
     blogFromRef.current.toggleVisibility()
     createBlog({
-      newBlog: { title, author, url },
+      newBlog: { title, author, url, comments: [] },
       user: { username: user.username, name: user.name }
     })
     setTitle('')
@@ -159,6 +160,13 @@ const App = ({
   }
 
   const showBlog = id => {
+    const commentHandler = target => {
+      const value = target.comment.value
+      addComment(value, id)
+
+      makeNotification(`Comment '${value}' has been added`, 'note')
+    }
+
     const blog = blogs.find(b => b.id === id)
     if (!blog) return null
     return (
@@ -173,6 +181,18 @@ const App = ({
         {user && user.username === blog.user.username ? (
           <Button onClick={() => deleteHandler(blog)}>poista</Button>
         ) : null}
+        <h3>comments</h3>
+        <Form onSubmit={({ target }) => commentHandler(target)}>
+          <Form.Field>
+            <input name='comment' type='text' />
+            <Button type='submit'>add comment</Button>
+          </Form.Field>
+        </Form>
+        <ul>
+          {blog.comments.map(c => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
       </div>
     )
   }
@@ -268,7 +288,8 @@ const mapDispatchToProps = {
   login,
   logout,
   addLike,
-  removeBlog
+  removeBlog,
+  addComment
 }
 
 const connectedApp = connect(
