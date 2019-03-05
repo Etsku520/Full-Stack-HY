@@ -1,17 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { Menu, Button } from 'semantic-ui-react'
 import { logout } from './../reducers/userReducer'
 import { makeNotification } from './../reducers/notificationReducer'
 
 const Navbar = ({ user, logout, makeNotification }) => {
+  const [ redirect, setRedirect ] = useState(false)
+
   const logoutHandler = () => {
     logout()
     makeNotification('olet kirjautunut ulos', 'note')
+    setRedirect(true)
   }
-
+  
   return (
+    <>
     <Menu inverted>
       <Menu.Item link>
         <Link to='/'>blogs</Link>
@@ -33,6 +37,8 @@ const Navbar = ({ user, logout, makeNotification }) => {
         )}
       </Menu.Item>
     </Menu>
+    {redirect ? <Redirect to="/" /> : null}
+    </>
   )
 }
 

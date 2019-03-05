@@ -9,3 +9,4 @@
 - [osa5](/Osa5)
 - [osa6](/Osa6)
 - [osa7](/Osa7)
+- [osa8](/Osa8)
