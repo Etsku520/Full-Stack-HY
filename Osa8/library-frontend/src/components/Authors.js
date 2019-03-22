@@ -29,18 +29,14 @@ const Authors = (props) => {
   const editAuthor = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{query: ALL_AUTHORS}]
   })
-  const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
   const updateAuhtor = async (e) => {
     e.preventDefault()
 
-    console.log(name, born)
     await editAuthor({
-      variables: { name, born: Number(born) }
+      variables: { name: e.target.name.value, born: Number(born) }
     })
-
-    setName('')
     setBorn('')
   }
 
@@ -82,15 +78,15 @@ const Authors = (props) => {
       <form onSubmit={updateAuhtor}>
         <div>
           name:
-          <input 
-            type="text"
-            value={name}
-            onChange={event => setName(event.target.value)}
-          />
+          <select name="name">
+            {authors.map(a => 
+                <option key={a.name} value={a.name}>{a.name}</option>
+            )}
+          </select>
         </div>
         <div>
           born:
-          <input
+          <input 
             type="number"
             value={born}
             onChange={event => setBorn(event.target.value)}
