@@ -196,6 +196,8 @@ const resolvers = {
               invalidArgs: args,
             })
           }
+        } else {
+          author = author[0]
         }
 
         const book =new Book({...args, author})
@@ -235,7 +237,6 @@ const resolvers = {
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser
-      console.log(currentUser)
 
       if (!currentUser) {
         //Tuli, että AuthenticationError is not defined, jos yritti sitä käyttää

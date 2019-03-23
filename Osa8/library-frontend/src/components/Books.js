@@ -40,6 +40,7 @@ const Books = (props) => {
 
   const books = result.data.allBooks
   const genres = []
+  console.log(allBooksResult)
   allBooksResult.data.allBooks.forEach(book => {
     book.genres.forEach(genre => {
       !genres.includes(genre) ? genres.push(genre): console.log("duplicate")
