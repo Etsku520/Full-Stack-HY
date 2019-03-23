@@ -5,6 +5,7 @@ import { useQuery, useMutation } from 'react-apollo-hooks'
 const ALL_AUTHORS = gql`
 {
   allAuthors {
+    id
     name
     born
     bookCount
