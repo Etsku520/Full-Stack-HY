@@ -13,7 +13,6 @@ const BOOK_ADDED = gql`
     bookAdded {
       title
       author {
-        id
         name
         born
         bookCount

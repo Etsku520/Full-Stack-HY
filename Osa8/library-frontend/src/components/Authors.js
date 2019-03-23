@@ -19,6 +19,7 @@ mutation updateAuthor($name: String!, $born: Int!) {
     name: $name,
     setBornTo: $born
   ) {
+    id
     name
     born
   }
@@ -50,6 +51,9 @@ const Authors = (props) => {
   }
 
   const authors = result.data.allAuthors
+
+  console.log(authors)
+  console.log(result)
 
   return (
     <div>
