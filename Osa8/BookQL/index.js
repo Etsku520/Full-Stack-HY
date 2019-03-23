@@ -183,10 +183,34 @@ const resolvers = {
       const currentUser = context.currentUser
 
       if (!currentUser) {
-        throw new AuthenticationError("not authenticated")
+         //Tuli, että AuthenticationError is not defined, jos yritti sitä käyttää
+         console.log("not authenticated")
+      } else {
+        let author = await Author.find({ name: args.author })
+        if (author.length === 0) {
+          author = new Author({ name: args.author })
+          try {
+            await author.save()
+          } catch (error) {
+            throw new UserInputError(error.message, {
+              invalidArgs: args,
+            })
+          }
+        }
+
+        const book =new Book({...args, author})
+        try {
+          await book.save()
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
+
+        return book
       }
 
-      let author = await Author.find({ name: args.author })
+      /* let author = await Author.find({ name: args.author })
       if (author.length === 0) {
         author = new Author({ name: args.author })
         try {
@@ -207,7 +231,7 @@ const resolvers = {
         })
       }
 
-      return book
+      return book */
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser
