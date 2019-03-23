@@ -13,20 +13,34 @@ const ALL_BOOKS = gql`
 }
 `
 
+const BOOKS_OF_GENRE = gql`
+query books($genre: String!){
+  allBooks (genre: $genre) {
+    title
+    published
+    author {name, born, bookCount}
+    genres
+  }
+}
+`
+
 const Books = (props) => {
   const [filter, setFilter] = useState(null)
-  const result = useQuery(ALL_BOOKS)
+  const allBooksResult = useQuery(ALL_BOOKS)
+  const result = !filter ? useQuery(ALL_BOOKS) : useQuery(BOOKS_OF_GENRE, {
+    variables: {genre: filter}
+  })
   if (!props.show) {
     return null
   }
 
-  if (result.loading) {
+  if (result.loading || allBooksResult.loading) {
     return <div>loading...</div>
   }
 
   const books = result.data.allBooks
   const genres = []
-  books.forEach(book => {
+  allBooksResult.data.allBooks.forEach(book => {
     book.genres.forEach(genre => {
       !genres.includes(genre) ? genres.push(genre): console.log("duplicate")
     })
@@ -47,8 +61,7 @@ const Books = (props) => {
               published
             </th>
           </tr>
-          {books.filter(b => !filter || b.genres.includes(filter))
-          .map(a =>
+          {books.map(a =>
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>

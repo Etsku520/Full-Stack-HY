@@ -2,9 +2,9 @@ import React from 'react'
 import { gql } from 'apollo-boost'
 import { useQuery } from 'react-apollo-hooks'
 
-const ALL_BOOKS = gql`
-{
-  allBooks {
+const BOOKS_OF_GENRE = gql`
+query books($genre: String!){
+  allBooks (genre: $genre) {
     title
     published
     author {name, born, bookCount}
@@ -21,19 +21,27 @@ const ME = gql`
 }
 `
 
-const Recommendations = (props) => {
-  const result = useQuery(ALL_BOOKS)
+const getGenre = () => {
   const result2 = useQuery(ME)
+  if (result2.loading) {
+    return null
+  }
+  return result2.data.me.favoriteGenre
+}
+
+const Recommendations = (props) => {
+  const genre = getGenre()
+  const result = useQuery(BOOKS_OF_GENRE, {variables: {genre: genre}})
+
   if (!props.show) {
     return null
   }
 
-  if (result.loading || result2.loading) {
+  if (result.loading) {
     return <div>loading...</div>
   }
 
   const books = result.data.allBooks
-  const genre = result2.data.me.favoriteGenre
 
   return (
     <div>
@@ -51,8 +59,7 @@ const Recommendations = (props) => {
               published
             </th>
           </tr>
-          {books.filter(b => b.genres.includes(genre))
-          .map(a =>
+          {books.map(a =>
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
